@@ -15,7 +15,7 @@
             $status = login($user);
             
             if($status){
-                setcookie('status', 'true', time()+3000, '/');
+                setcookie('status', 'true', time()+5000, '/');
                 $_SESSION['username'] = $status['username'];
                 $_SESSION['user_id'] = $status['id'];
                 $_SESSION['role'] = $status['role'];
