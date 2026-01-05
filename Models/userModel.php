@@ -1,7 +1,8 @@
 <?php
 require_once('db.php');
 
-function login($user){
+function login($user)
+{
     $con = getConnection();
     $sql = "select * from users where username='{$user['username']}' and password='{$user['password']}'";
     $result = mysqli_query($con, $sql);
@@ -13,7 +14,8 @@ function login($user){
     }
 }
 
-function getUserById($id){
+function getUserById($id)
+{
     $con = getConnection();
     $sql = "select * from users where id='{$id}'";
     $result = mysqli_query($con, $sql);
@@ -47,7 +49,8 @@ function addUser($user)
     }
 }
 
-function deleteUser($id){
+function deleteUser($id)
+{
     $con = getConnection();
     $sql = "delete from users where id='{$id}'";
     if(mysqli_query($con, $sql)){
@@ -57,7 +60,8 @@ function deleteUser($id){
     }
 }
 
-function updateUser($user){
+function updateUser($user)
+{
     $con = getConnection();
     $sql = "update users set username='{$user['username']}', email='{$user['email']}', role='{$user['role']}' where id='{$user['id']}'";
     if(mysqli_query($con, $sql)){
@@ -67,7 +71,8 @@ function updateUser($user){
     }
 }
 
-function blockUser($id){
+function blockUser($id)
+{
     $con = getConnection();
     $sql = "update users set role='blocked' where id='{$id}'";
     if(mysqli_query($con, $sql)){
