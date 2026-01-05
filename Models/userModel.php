@@ -23,3 +23,26 @@ function getUserById($id){
         return false;
     }
 }
+
+function getAllUsers()
+{
+    $con = getConnection();
+    $sql = "select * from users";
+    $result = mysqli_query($con, $sql);
+    $users = [];
+    while($row = mysqli_fetch_assoc($result)){
+        array_push($users, $row);
+    }
+    return $users;
+}
+
+function addUser($user)
+{
+    $con = getConnection();
+    $sql = "insert into users values(null, '{$user['username']}','{$user['password']}', '{$user['email']}', 'user')";
+    if(mysqli_query($con, $sql)){
+        return true;
+    }else{
+        return false;
+    }
+}
