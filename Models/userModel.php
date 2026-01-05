@@ -46,3 +46,35 @@ function addUser($user)
         return false;
     }
 }
+
+function deleteUser($id){
+    $con = getConnection();
+    $sql = "delete from users where id='{$id}'";
+    if(mysqli_query($con, $sql)){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+function updateUser($user){
+    $con = getConnection();
+    $sql = "update users set username='{$user['username']}', email='{$user['email']}', role='{$user['role']}' where id='{$user['id']}'";
+    if(mysqli_query($con, $sql)){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+function blockUser($id){
+    $con = getConnection();
+    $sql = "update users set role='blocked' where id='{$id}'";
+    if(mysqli_query($con, $sql)){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+?>
