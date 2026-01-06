@@ -24,7 +24,7 @@ require_once('../Controllers/adminCheck.php');
                             <td><input type="text" name = "title" placeholder = "Enter exhibition Title"></td>
                         </tr>
                         <tr>
-                            <td> PhotoType</td>
+                            <td> PhotoType </td>
                             <td>
                                 <select name="type">
                                     <option value = "">Please select Type of your picture</option>
