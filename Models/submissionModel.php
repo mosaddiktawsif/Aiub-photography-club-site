@@ -11,9 +11,10 @@ function getAllSubmissions()
             order by s.submitted_at desc";
     $result = mysqli_query($con, $sql);
     $submissions = [];
-    while($row = mysqli_fetch_assoc($result)){
+    while($row = mysqli_fetch_assoc($result))
+        {
         array_push($submissions, $row);
-    }
+        }
     return $submissions;
 }
 
@@ -26,9 +27,11 @@ function getSubmissionById($id)
             join users u on s.user_id = u.id 
             where s.id='{$id}'";
     $result = mysqli_query($con, $sql);
-    if(mysqli_num_rows($result) == 1){
+    if(mysqli_num_rows($result) == 1)
+        {
         return mysqli_fetch_assoc($result);
-    }else{
+        }
+    else  {
         return false;
     }
 }
@@ -37,9 +40,11 @@ function approveSubmission($id)
 {
     $con = getConnection();
     $sql = "update submissions set status='approved' where id='{$id}'";
-    if(mysqli_query($con, $sql)){
+    if(mysqli_query($con, $sql))
+        {
         return true;
-    }else{
+        }     
+    else {
         return false;
     }
 }
@@ -48,12 +53,16 @@ function rejectSubmission($id)
 {
     $con = getConnection();
     $sql = "update submissions set status='rejected' where id='{$id}'";
-    if(mysqli_query($con, $sql)){
+    if(mysqli_query($con, $sql))
+        {
         return true;
-    }else{
+        }
+    else  {
         return false;
     }
 }
+
+
 
 
 

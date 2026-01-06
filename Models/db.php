@@ -5,7 +5,8 @@
     $dbuser = "root";
     $dbpass = "";
 
-    function getConnection(){
+    function getConnection()
+    {
         global $host;
         global $dbname;
         global $dbpass;
