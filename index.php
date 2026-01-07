@@ -29,12 +29,12 @@
     </div>
 
     <script>
-        // AJAX: Fetch notices dynamically for Home Page
-        fetch('controllers/NoticeController.php?action=fetch_notices') // Uses the controller from previous step
+        
+        fetch('Controller/NoticeController.php?action=fetch_notices') // Uses the controller from previous step
             .then(res => res.json())
             .then(data => {
                 let html = '';
-                // Show only top 3 notices on homepage
+                
                 data.data.slice(0, 3).forEach(n => {
                     html += `<p><strong>${n.title}</strong>: ${n.message}</p><hr>`;
                 });

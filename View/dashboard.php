@@ -9,19 +9,32 @@ if (!isset($_SESSION['admin_logged_in'])) {
 <html>
 <head>
     <title>Admin Dashboard</title>
-    <style>
-        body { font-family: sans-serif; padding: 20px; }
-        .section { border: 1px solid #ccc; padding: 20px; margin-bottom: 20px; background: #f9f9f9; }
-        h2 { margin-top: 0; }
-    </style>
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
     <h1>Admin Dashboard</h1>
-    <a href="../controller/Logout.php" style="float:right; color:red;">Logout</a>
+    <a href="../Controller/Logout.php" style="float:right; color:red;">Logout</a>
+
+    <?php if (isset($_GET['success'])): ?>
+        <div style="background:#e6ffea; padding:10px; border:1px solid #2ecc71; margin:10px 0;">
+            <?php
+            $msg = '';
+            switch ($_GET['success']) {
+                case 'notice': $msg = 'Notice posted successfully.'; break;
+                case 'blog': $msg = 'Blog published successfully.'; break;
+                case 'gallery': $msg = 'Photo uploaded successfully.'; break;
+                case 'result': $msg = 'Result published successfully.'; break;
+                default: $msg = 'Action completed successfully.'; break;
+            }
+            echo htmlspecialchars($msg);
+            ?>
+            &nbsp;&nbsp;<a href="../index.php" style="padding:6px 10px; background:#333; color:#fff; text-decoration:none;">Home</a>
+        </div>
+    <?php endif; ?>
 
     <div class="section">
         <h2>Post a Notice</h2>
-        <form action="../controller/AdminController.php" method="POST">
+        <form action="../Controller/AdminController.php" method="POST">
             <input type="text" name="title" placeholder="Notice Title" required><br><br>
             <textarea name="message" placeholder="Notice Details" required></textarea><br><br>
             <button type="submit" name="add_notice">Post Notice</button>
@@ -30,7 +43,7 @@ if (!isset($_SESSION['admin_logged_in'])) {
 
     <div class="section">
         <h2>Write a Blog</h2>
-        <form action="../controller/AdminController.php" method="POST">
+        <form action="../Controller/AdminController.php" method="POST">
             <input type="text" name="title" placeholder="Blog Title" required><br><br>
             <textarea name="content" placeholder="Blog Content" required></textarea><br><br>
             <button type="submit" name="add_blog">Publish Blog</button>
@@ -39,7 +52,7 @@ if (!isset($_SESSION['admin_logged_in'])) {
 
     <div class="section">
         <h2>Upload to Gallery</h2>
-        <form action="../controller/AdminController.php" method="POST" enctype="multipart/form-data">
+        <form action="../Controller/AdminController.php" method="POST" enctype="multipart/form-data">
             <input type="text" name="description" placeholder="Photo Caption" required><br><br>
             <input type="file" name="image" required><br><br>
             <button type="submit" name="upload_photo">Upload</button>
@@ -48,7 +61,7 @@ if (!isset($_SESSION['admin_logged_in'])) {
 
     <div class="section">
         <h2>Publish Result</h2>
-        <form action="../controller/AdminController.php" method="POST">
+        <form action="../Controller/AdminController.php" method="POST">
             <input type="text" name="name" placeholder="Participant Name" required><br><br>
             <input type="text" name="phone" placeholder="Phone Number" required><br><br>
             <input type="number" name="qty" placeholder="Selected Photos Qty" required><br><br>
