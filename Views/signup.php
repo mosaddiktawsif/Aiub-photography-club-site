@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - Exhibition System</title>
+    <script src = "../Assets/validation.js"></script>
 </head>
 <body>
  <form name ="signupForm" method="post" action="../Controllers/signupCheck.php" onsubmit = "return validateSigup()">
