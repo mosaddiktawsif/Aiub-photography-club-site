@@ -10,11 +10,9 @@ $admin = !empty($_SESSION['admin_logged_in']);
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
+    <?php include __DIR__ . '/../includes/navbar.php'; ?>
     <div class="container">
-        <div class="h-wrap">
-            <h1>Results</h1>
-            <a class="home-link" href="../index.php">Home</a>
-        </div>
+        <h1>Results</h1>
 
         <?php
         $res = $conn->query("SELECT id, participant_name, contact_number, selected_photo_qty FROM results ORDER BY id DESC");

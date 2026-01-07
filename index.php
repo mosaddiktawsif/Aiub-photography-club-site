@@ -6,16 +6,9 @@
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
+    <?php include __DIR__ . '/includes/navbar.php'; ?>
 
-    <nav>
-        <a href="index.php">HOME</a>
-        <a href="view/blog_list.php">BLOG</a>
-        <a href="view/notice_list.php">NOTICE BOARD</a>
-        <a href="view/gallery.php">GALLERY</a>
-        <a href="view/results.php">RESULTS</a>
-        <a href="view/login.php">ADMIN LOGIN</a>
-    </nav>
-
+    <div class="container">
     <h1>Welcome to AIUB Photography Club</h1>
 
     <div class="notice-section">
@@ -37,6 +30,6 @@ fetch('Controller/NoticeController.php?action=fetch_notices')
     console.error(err);
   });
  </script>
-
+    </div>
 </body>
 </html>

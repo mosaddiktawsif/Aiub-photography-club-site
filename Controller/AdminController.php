@@ -42,6 +42,7 @@ if (isset($_POST['login'])) {
     $res = $stmt->get_result();
     if ($res && $res->num_rows > 0) {
         $_SESSION['admin_logged_in'] = true;
+        $_SESSION['admin_username'] = $user;
         header("Location: ../View/dashboard.php");
         exit;
     } else {

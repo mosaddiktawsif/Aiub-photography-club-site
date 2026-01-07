@@ -10,11 +10,9 @@ $admin = !empty($_SESSION['admin_logged_in']);
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
+    <?php include __DIR__ . '/../includes/navbar.php'; ?>
     <div class="container">
-        <div class="h-wrap">
-            <h1>Blogs</h1>
-            <a class="home-link" href="../index.php">Home</a>
-        </div>
+        <h1>Blogs</h1>
 
         <div>
             <?php

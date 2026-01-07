@@ -12,8 +12,10 @@ $showExistsError = (isset($_GET['error']) && $_GET['error'] === 'exists');
 <head>
     <title>Sign Up - AIUB Photography Club</title>
     <link rel="stylesheet" href="../assets/css/style.css">
+    <script src="../assets/js/validation.js"></script>
 </head>
 <body>
+    <?php include __DIR__ . '/../includes/navbar.php'; ?>
     <div class="container">
         <div class="card panel-center">
             <h2>Admin Sign Up</h2>
@@ -26,7 +28,7 @@ $showExistsError = (isset($_GET['error']) && $_GET['error'] === 'exists');
             }
             ?>
 
-            <form action="../Controller/AdminController.php" method="POST">
+            <form action="../Controller/AdminController.php" method="POST" onsubmit="return validateSignupForm();">
                 <div class="form-row">
                     <input type="text" name="username" placeholder="Username" required>
                 </div>
