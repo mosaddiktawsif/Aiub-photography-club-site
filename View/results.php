@@ -6,11 +6,7 @@ require_once __DIR__ . '/../Models/db.php';
 <head>
     <title>Results - AIUB Photography Club</title>
     <link rel="stylesheet" href="../assets/css/style.css">
-    <style>
-        table { border-collapse: collapse; width:100%; max-width:900px; }
-        th, td { border:1px solid #ddd; padding:8px; text-align:left; }
-        th { background:#f4f4f4; }
-    </style>
+  
 </head>
 <body>
     <h1>Results</h1>

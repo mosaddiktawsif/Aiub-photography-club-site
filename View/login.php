@@ -9,9 +9,7 @@ if (!empty($_SESSION['admin_logged_in'])) {
 <html>
 <head>
     <title>Login - AIUB Photography Club</title>
-    <style>
-        /* ... keep existing styles ... */
-    </style>
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
     <form action="../Controller/AdminController.php" method="POST">

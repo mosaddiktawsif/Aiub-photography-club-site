@@ -13,10 +13,10 @@ if (!isset($_SESSION['admin_logged_in'])) {
 </head>
 <body>
     <h1>Admin Dashboard</h1>
-    <a href="../Controller/Logout.php" style="float:right; color:red;">Logout</a>
+    <a href="../Controller/Logout.php">Logout</a>
 
     <?php if (isset($_GET['success'])): ?>
-        <div style="background:#e6ffea; padding:10px; border:1px solid #2ecc71; margin:10px 0;">
+        <div>
             <?php
             $msg = '';
             switch ($_GET['success']) {
@@ -28,7 +28,7 @@ if (!isset($_SESSION['admin_logged_in'])) {
             }
             echo htmlspecialchars($msg);
             ?>
-            &nbsp;&nbsp;<a href="../index.php" style="padding:6px 10px; background:#333; color:#fff; text-decoration:none;">Home</a>
+            &nbsp;&nbsp;<a href="../index.php">Home</a>
         </div>
     <?php endif; ?>
 

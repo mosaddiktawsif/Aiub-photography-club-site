@@ -3,12 +3,7 @@
 <html>
 <head>
     <title>AIUB Photography Club</title>
-    <link rel="stylesheet" href="assets/css/style.css"> <style>
-        /* Basic Menu CSS */
-        nav { background: #333; padding: 10px; }
-        nav a { color: white; margin-right: 20px; text-decoration: none; font-weight: bold; }
-        .notice-section { border: 2px solid #333; padding: 10px; margin: 20px 0; }
-    </style>
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
@@ -18,7 +13,7 @@
         <a href="view/notice_list.php">NOTICE BOARD</a>
         <a href="view/gallery.php">GALLERY</a>
         <a href="view/results.php">RESULTS</a>
-        <a href="view/login.php" style="float:right;">ADMIN LOGIN</a>
+        <a href="view/login.php">ADMIN LOGIN</a>
     </nav>
 
     <h1>Welcome to AIUB Photography Club</h1>

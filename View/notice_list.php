@@ -15,7 +15,7 @@ require_once __DIR__ . '/../Models/db.php';
         $res = $conn->query("SELECT id, title, message, created_at FROM notices ORDER BY created_at DESC");
         if ($res && $res->num_rows > 0) {
             while ($row = $res->fetch_assoc()) {
-                echo '<div style="border:1px solid #ccc;padding:10px;margin:10px 0;">';
+                echo '<div>';
                 echo '<h3>' . htmlspecialchars($row['title']) . '</h3>';
                 echo '<p>' . nl2br(htmlspecialchars($row['message'])) . '</p>';
                 echo '<small>Posted: ' . htmlspecialchars($row['created_at']) . '</small>';
