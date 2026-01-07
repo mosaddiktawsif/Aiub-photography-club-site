@@ -94,5 +94,25 @@ function validateUserEdit()
         return true;
 
 
-        
+
 }
+
+function confirmDelete(username) 
+{
+    return confirm ("want to delet current user : "+username+"?");
+}
+
+function confirmBlock(username) 
+{
+    return confirm ("want to block current user : "+username+"?");
+}
+function confirmApprove() 
+{
+    return confirm ("want to approve the current submission ?");
+}
+
+function confirmReject() 
+{
+    return confirm ("want to approve the current submission ?");
+}
+
