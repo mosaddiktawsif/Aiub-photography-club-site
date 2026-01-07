@@ -16,8 +16,7 @@
 <body>
     <div class="admin_dashboard">
         <h1>Review Submissions</h1>
-
-        <table class="data_table">
+ <table class="data_table">
             <tr>
                 <th>ID</th>
                 <th>Exhibition</th>
@@ -38,18 +37,18 @@
                     <td><?php echo $s['exhibition_title']; ?></td>
                     <td><?php echo $s['username']; ?></td>
                     <td><?php echo $s['title']; ?></td>
-                    <td><?php echo substr($s['description'], 0, 50); ?>...</td>
+                    <td><?php echo substr($s['description'], 0, 50);?>...</td>
                     <td class="status-<?php echo $s['status']; ?>"><?php echo strtoupper($s['status']); ?></td>
                     <td><?php echo $s['submitted_at']; ?></td>
                     <td class="action-buttons">
                         <?php if($s['status'] == 'pending'){ ?>
-                            <form method="post" action="../Controllers/submissionCheck.php" style="display:inline;" onsubmit="return confirmApprove()">
+                            <form method="post" action="../Controllers/submissionCheck.php" onsubmit="return confirmApprove()">
                                 <input type="hidden" name="id" value="<?php echo $s['id']; ?>">
-                                <button type="submit" name="approve" style="background-color: green;">Approve</button>
+                                <button type="submit" name="approve" >Approve</button>
                             </form>
-                            <form method="post" action="../Controllers/submissionCheck.php" style="display:inline;" onsubmit="return confirmReject()">
+                            <form method="post" action="../Controllers/submissionCheck.php"  onsubmit="return confirmReject()">
                                 <input type="hidden" name="id" value="<?php echo $s['id']; ?>">
-                                <button type="submit" name="reject" style="background-color: red;">Reject</button>
+                                <button type="submit" name="reject" >Reject</button>
                             </form>
                         <?php } ?>
                     </td>
@@ -65,6 +64,7 @@
                 }
             ?>
         </table>
+       
     </div>
 </body>
 </html>
