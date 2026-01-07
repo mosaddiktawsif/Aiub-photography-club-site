@@ -69,26 +69,27 @@ function validateExhibition()
 }
 
 
-function validateExhibition()
+function validateUserEdit()
 {
-    var title = document.forms["exhibitionForm"]["title"].value;
-    var type = document.forms["exhibitionForm"]["type"].value;
-    var deadline = document.forms["exhibitionForm"]["deadline"].value;
+    var username = document.forms["editUserForm"]["username"].value;
+    var email = document.forms["editUserForm"]["email"].value;
+    var role = document.forms["editUserForm"]["role"].value;
 
-         if (title == "")
+         if (username == "")
     {
-        alert ("Please fill the title  ");
+        alert ("Please fill the UserName");
         return false; 
     }
-            if (type == "")
+            if (email== "")
     {
-        alert ("Please fill the type ");
+        alert ("Please fill the email");
         return false ;
     }
-     if (deadline == "")
+
+           if (role== "")
     {
-        alert ("Deadline must be filled");
-        return false; 
+        alert ("Please fill the role");
+        return false ;
     }
         return true;
 

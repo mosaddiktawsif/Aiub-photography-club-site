@@ -27,7 +27,7 @@
     <div class = "admin_dashboard">
         <h2>Edit User</h2>
 
-        <form name = "editUserForm" method = "post" action="../Controllers/userCheck.php" onsubmit = "return validateUserEditt()">
+        <form name = "editUserForm" method = "post" action="../Controllers/userCheck.php" onsubmit = "return validateUserEdit()">
             <fieldset>
                 <legend>Edit User Details</legend>
                 <input type = "hidden" name ="id" value = "<?php echo $user['id']?>">
