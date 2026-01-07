@@ -11,25 +11,35 @@ $showExistsError = (isset($_GET['error']) && $_GET['error'] === 'exists');
 <html>
 <head>
     <title>Sign Up - AIUB Photography Club</title>
- <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-    <?php if ($showSuccess): ?>
-        <script>
-            alert('Sign up successful. You can now log in.');
-        </script>
-    <?php elseif ($showExistsError): ?>
-        <script>
-            alert('Username already exists. Please choose another username.');
-        </script>
-    <?php endif; ?>
+    <div class="container">
+        <div class="card panel-center">
+            <h2>Admin Sign Up</h2>
 
-    <form action="../Controller/AdminController.php" method="POST">
-        <h2>Admin Sign Up</h2>
-        <input type="text" name="username" placeholder="Username" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <button type="submit" name="register_user">Sign Up</button>
-        <p style="margin-top:10px;">Already have an account? <a href="login.php">Login here</a></p>
-    </form>
+            <?php
+            if ($showSuccess) {
+                echo '<div class="alert-success">Sign up successful. <a href="login.php">Click here to login</a>.</div>';
+            } elseif ($showExistsError) {
+                echo '<div class="alert-error">Username already exists. Please choose another username.</div>';
+            }
+            ?>
+
+            <form action="../Controller/AdminController.php" method="POST">
+                <div class="form-row">
+                    <input type="text" name="username" placeholder="Username" required>
+                </div>
+                <div class="form-row">
+                    <input type="password" name="password" placeholder="Password" required>
+                </div>
+                <div class="form-row">
+                    <button class="btn" type="submit" name="register_user">Sign Up</button>
+                </div>
+            </form>
+
+            <p class="small">Already have an account? <a href="login.php">Login here</a></p>
+        </div>
+    </div>
 </body>
 </html>

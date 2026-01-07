@@ -2,13 +2,14 @@
 session_start();
 require_once __DIR__ . '/../Models/db.php';
 
-// --- REGISTER (signup) ---
+
 if (isset($_POST['register_user'])) {
     $user = $_POST['username'] ?? '';
     $pass = $_POST['password'] ?? '';
 
-    // Check if user exists
+
     $check = $conn->prepare("SELECT id FROM users WHERE username = ?");
+    if (!$check) { die("Prepare failed: " . $conn->error); }
     $check->bind_param("s", $user);
     $check->execute();
     $checkRes = $check->get_result();
@@ -17,34 +18,27 @@ if (isset($_POST['register_user'])) {
         exit;
     }
 
-    // Insert new user
     $stmt = $conn->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
     if (!$stmt) { die("Prepare failed: " . $conn->error); }
     $stmt->bind_param("ss", $user, $pass);
 
     if ($stmt->execute()) {
-        // Auto-login user after signup
-        $_SESSION['admin_logged_in'] = true;
-        header("Location: ../View/dashboard.php");
+        header("Location: ../View/signup.php?success=1");
         exit;
     } else {
         die("Error: " . $conn->error);
     }
 }
 
-// --- LOGIN ---
+
 if (isset($_POST['login'])) {
     $user = $_POST['username'] ?? '';
     $pass = $_POST['password'] ?? '';
 
     $stmt = $conn->prepare("SELECT id FROM users WHERE username = ? AND password = ?");
-    if (!$stmt) {
-        die("Prepare failed: " . $conn->error);
-    }
+    if (!$stmt) { die("Prepare failed: " . $conn->error); }
     $stmt->bind_param("ss", $user, $pass);
-    if (!$stmt->execute()) {
-        die("Execute failed: " . $stmt->error);
-    }
+    if (!$stmt->execute()) { die("Execute failed: " . $stmt->error); }
     $res = $stmt->get_result();
     if ($res && $res->num_rows > 0) {
         $_SESSION['admin_logged_in'] = true;
@@ -56,13 +50,13 @@ if (isset($_POST['login'])) {
     }
 }
 
-// From here on, actions require an authenticated admin
+
 if (!isset($_SESSION['admin_logged_in'])) {
     header("Location: ../View/login.php");
     exit;
 }
 
-// --- ADD NOTICE ---
+
 if (isset($_POST['add_notice'])) {
     $title = $_POST['title'] ?? '';
     $message = $_POST['message'] ?? '';
@@ -79,7 +73,7 @@ if (isset($_POST['add_notice'])) {
     }
 }
 
-// --- ADD BLOG ---
+
 if (isset($_POST['add_blog'])) {
     $title = $_POST['title'] ?? '';
     $content = $_POST['content'] ?? '';
@@ -96,7 +90,7 @@ if (isset($_POST['add_blog'])) {
     }
 }
 
-// --- UPLOAD PHOTO ---
+
 if (isset($_POST['upload_photo'])) {
     if (!isset($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
         die("No file uploaded or upload error.");
@@ -113,7 +107,7 @@ if (isset($_POST['upload_photo'])) {
     $ext = pathinfo($originalName, PATHINFO_EXTENSION);
     $safeName = uniqid('img_', true) . '.' . $ext;
     $targetPath = $uploadDir . '/' . $safeName;
-    $webPath = 'assets/uploads/' . $safeName; // relative path used in DB / frontend
+    $webPath = 'assets/uploads/' . $safeName; // stored in DB as relative
 
     if (!move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
         die("Failed to move uploaded file.");
@@ -131,7 +125,7 @@ if (isset($_POST['upload_photo'])) {
     }
 }
 
-// --- PUBLISH RESULT ---
+
 if (isset($_POST['publish_result'])) {
     $name = $_POST['name'] ?? '';
     $phone = $_POST['phone'] ?? '';
@@ -149,7 +143,81 @@ if (isset($_POST['publish_result'])) {
     }
 }
 
-// Default redirect
+
+if (isset($_POST['delete_notice'])) {
+    $id = intval($_POST['id'] ?? 0);
+    $stmt = $conn->prepare("DELETE FROM notices WHERE id = ?");
+    if (!$stmt) { die("Prepare failed: " . $conn->error); }
+    $stmt->bind_param("i", $id);
+    if ($stmt->execute()) {
+        header("Location: ../View/notice_list.php?deleted=1");
+        exit;
+    } else {
+        die("Delete failed: " . $stmt->error);
+    }
+}
+
+
+if (isset($_POST['delete_blog'])) {
+    $id = intval($_POST['id'] ?? 0);
+    $stmt = $conn->prepare("DELETE FROM blogs WHERE id = ?");
+    if (!$stmt) { die("Prepare failed: " . $conn->error); }
+    $stmt->bind_param("i", $id);
+    if ($stmt->execute()) {
+        header("Location: ../View/blog_list.php?deleted=1");
+        exit;
+    } else {
+        die("Delete failed: " . $stmt->error);
+    }
+}
+
+
+if (isset($_POST['delete_photo'])) {
+    $id = intval($_POST['id'] ?? 0);
+
+
+    $q = $conn->prepare("SELECT image_path FROM gallery WHERE id = ?");
+    if ($q) {
+        $q->bind_param("i", $id);
+        $q->execute();
+        $r = $q->get_result();
+        if ($r && $row = $r->fetch_assoc()) {
+            $img = $row['image_path'];
+            if ($img) {
+                $filePath = __DIR__ . '/../' . ltrim($img, '/');
+                if (file_exists($filePath)) {
+                    @unlink($filePath);
+                }
+            }
+        }
+    }
+
+    $stmt = $conn->prepare("DELETE FROM gallery WHERE id = ?");
+    if (!$stmt) { die("Prepare failed: " . $conn->error); }
+    $stmt->bind_param("i", $id);
+    if ($stmt->execute()) {
+        header("Location: ../View/gallery.php?deleted=1");
+        exit;
+    } else {
+        die("Delete failed: " . $stmt->error);
+    }
+}
+
+
+if (isset($_POST['delete_result'])) {
+    $id = intval($_POST['id'] ?? 0);
+    $stmt = $conn->prepare("DELETE FROM results WHERE id = ?");
+    if (!$stmt) { die("Prepare failed: " . $conn->error); }
+    $stmt->bind_param("i", $id);
+    if ($stmt->execute()) {
+        header("Location: ../View/results.php?deleted=1");
+        exit;
+    } else {
+        die("Delete failed: " . $stmt->error);
+    }
+}
+
+
 header("Location: ../View/dashboard.php");
 exit;
 ?>

@@ -19,7 +19,7 @@ if ($action === 'fetch_notices') {
     exit;
 }
 
-// Add other notice-related endpoints as needed
+-
 http_response_code(400);
 echo json_encode(['error' => 'Invalid action']);
 ?>
