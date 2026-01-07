@@ -6,7 +6,7 @@
         $id = $_POST['id'];
         $status = approveSubmission($id);
         if($status){
-            header('location: ../Views/submission_list.php');
+            header('location: ../Views/submissionList.php');
         }else{
             echo "Failed to approve submission";
         }
@@ -16,7 +16,7 @@
         $id = $_POST['id'];
         $status = rejectSubmission($id);
         if($status){
-            header('location: ../Views/submission_list.php');
+            header('location: ../Views/submissionList.php');
         }else{
             echo "Failed to reject submission";
         }
