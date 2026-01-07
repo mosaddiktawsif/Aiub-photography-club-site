@@ -20,14 +20,14 @@
             $status = login($user);
             
             if($status){
-                setcookie('status', 'true', time()+5000, '/');
+                setcookie('status', 'true', time()+2000, '/');
                 $_SESSION['username'] = $status['username'];
                 $_SESSION['user_id'] = $status['id'];
                 $_SESSION['role'] = $status['role'];
                 
                 if($status['role'] == 'admin')
                 {
-                    header('location: ../Views/admin_home.php');
+                    header('location: ../Views/adminHome.php');
                 }
                 
                 else {

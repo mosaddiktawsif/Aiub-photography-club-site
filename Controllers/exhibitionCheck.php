@@ -29,7 +29,7 @@
             
             if($status)
                 {
-                header('location: ../Views/exhibition_list.php');
+                header('location: ../Views/exhibitionList.php');
                 }
             else  {
                 echo "Failed to create exhibition";
@@ -37,8 +37,9 @@
         }
     }
     else  {
-        header('location: ../Views/create_exhibition.php');
+        header('location: ../Views/exhibition.php');
     }
+?>
 
 
 

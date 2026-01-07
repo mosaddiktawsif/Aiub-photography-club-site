@@ -10,7 +10,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Management - Exhibition System</title>
+    <title>User Management</title>
     <script src = "../Assets/validation.js"></script>
 </head>
 <body>
