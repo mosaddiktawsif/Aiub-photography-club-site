@@ -15,7 +15,7 @@
 </head>
 <body>
     <div class="admin_dashboard">
-        <h1>Review Submissions</h1>
+        <h2>Review Submissions</h2>
  <table class="data_table">
             <tr>
                 <th>ID</th>

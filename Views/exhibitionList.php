@@ -15,7 +15,7 @@
 </head>
 <body>
     <div class="admin_dashboard">
-        <h1>Exhibition List</h1>
+        <h2>Exhibition List</h2>
 
         <table class="data_table">
             <tr>

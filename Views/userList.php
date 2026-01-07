@@ -14,7 +14,7 @@
 </head>
 <body>
     <div class="admin_dashboard">
-        <h1>User Management</h1>
+        <h2>User Management</h2>
 
         <table class="data_table">
             <tr>
