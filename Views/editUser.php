@@ -43,15 +43,20 @@
                     <tr>
                         <td>Role</td>
                         <td>
-                            <select name="role" id="">
-                                <option value="user"></option>
-                                <option value="user"></option>
-                                <option value="user"></option>
+                            <select name="role" >
+                                <option value="user" <?php if ($user ['role'] == 'user') echo 'selected' ; ?>> User </option>
+                                <option value="admin"<?php if ($user ['role'] == 'admin') echo 'selected' ; ?>>Admin</option>
+                                <option value="blocked"<?php if ($user ['role'] == 'admin') echo 'selected' ; ?>>Blocked</option>
                             </select>
                         </td>
                     </tr>
+                    <tr> 
+                        <td>Submit</td>
+                        <td> <input type="submit" name = "update" value = "Update User"></td>
+                    </tr>
                 </table>
             </fieldset>
+        </form>
     </div>
 </body>
 </html>
