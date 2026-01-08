@@ -1,8 +1,8 @@
 <?php require_once('../Controllers/sessionCheck.php'); ?>
 <html>
 <head>
-    <link rel="stylesheet" href="../Assets/css/style.css">
-    <script src="../Assets/js/validation.js"></script>
+    <link rel="stylesheet" href="../Assets/css/stylee.css">
+    <script src="../Assets/validation.js"></script>
 </head>
 <body>
     <div class="container">
