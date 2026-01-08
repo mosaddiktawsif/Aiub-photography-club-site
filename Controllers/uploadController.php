@@ -8,11 +8,11 @@ if(isset($_POST['upload'])){
     $tmp = $file['tmp_name'];
     $size = $file['size'];
 
-    // PHP Validation
+    
     if($name == ""){ echo "Null file"; exit; }
-    if($size > 2097152){ echo "File too large (PHP)"; exit; } // 2MB
+    if($size > 2097152){ echo "File too large (PHP)"; exit; } 
 
-    // Optimization: Rename file
+   
     $newName = time() . "_" . $name;
     $dest = "../Assets" . $newName;
 
