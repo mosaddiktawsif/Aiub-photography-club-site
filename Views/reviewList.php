@@ -4,15 +4,15 @@ require_once('../Models/reviewModel.php');
 $list = getPendingSubmissions();
 ?>
 <html>
-<head><link rel="stylesheet" href="../Assets/css/style.css"></head>
+<head><link rel="stylesheet" href="../Assets/stylee.css"></head>
 <body>
     <div class="container">
-        <h2>4.2 Submission Review</h2>
+        <h2>Submission Review</h2>
         <table>
             <tr><th>Preview</th><th>Action</th></tr>
             <?php foreach($list as $item){ ?>
             <tr>
-                <!-- Assuming image is stored in Assets/uploads/ -->
+                
                 <td><img src="../Assets/uploads/<?=$item['photo_path']?>" width="100"></td>
                 <td>
                     <form method="post" action="../Controllers/reviewController.php">

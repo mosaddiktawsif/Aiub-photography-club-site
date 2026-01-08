@@ -1,12 +1,12 @@
 <?php require_once('../Controllers/sessionCheck.php'); ?>
 <html>
 <head>
-    <link rel="stylesheet" href="../Assets/css/style.css">
-    <script src="../Assets/js/validation.js"></script>
+    <link rel="stylesheet" href="../Assets/stylee.css">
+    <script src="../Assets/validation.js"></script>
 </head>
 <body>
     <div class="container">
-        <h2>4.1 Create Exhibition</h2>
+        <h2>Create Exhibition</h2>
         <div id="js-error" class="error"></div>
         <form method="post" action="../Controllers/exhibitionController.php" onsubmit="return validateExhibition()">
             Title: <input type="text" id="title" name="title"><br>

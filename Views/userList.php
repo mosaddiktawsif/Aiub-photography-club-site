@@ -4,10 +4,10 @@ require_once('../Models/userModel.php');
 $users = getAllUsers();
 ?>
 <html>
-<head><link rel="stylesheet" href="../Assets/css/style.css"></head>
+<head><link rel="stylesheet" href="../Assets/stylee.css"></head>
 <body>
     <div class="container">
-        <h2>4.3 User Management</h2>
+        <h2> User Management</h2>
         <table>
             <tr><th>User</th><th>Status</th><th>Action</th></tr>
             <?php foreach($users as $u){ ?>
