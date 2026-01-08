@@ -1,5 +1,7 @@
 <?php
 session_start();
+require_once __DIR__ . '/../Models/validation.php';
+ensure_csrf_token();
 if (!isset($_SESSION['admin_logged_in'])) {
     header("Location: login.php");
     exit();
@@ -12,6 +14,15 @@ if (!isset($_SESSION['admin_logged_in'])) {
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
+    <nav>
+        <a class="brand" href="../index.php">AIUB Photography Club</a>
+        <a href="blog_list.php">BLOG</a>
+        <a href="notice_list.php">NOTICE BOARD</a>
+        <a href="gallery.php">GALLERY</a>
+        <a href="results.php">RESULTS</a>
+        <a href="login.php" class="nav-right">ADMIN LOGIN</a>
+    </nav>
+
     <div class="container">
         <div class="admin-header">
             <h1>Admin Dashboard</h1>
@@ -40,41 +51,18 @@ if (!isset($_SESSION['admin_logged_in'])) {
 
         <div class="card">
             <h2>Post a Notice</h2>
-            <form action="../Controller/AdminController.php" method="POST">
+            <form id="noticeForm" action="../Controller/AdminController.php" method="POST">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                 <div class="form-row"><input type="text" name="title" placeholder="Notice Title" required></div>
                 <div class="form-row"><textarea name="message" placeholder="Notice Details" required></textarea></div>
                 <div class="form-row"><button class="btn" type="submit" name="add_notice">Post Notice</button></div>
             </form>
         </div>
 
-        <div class="card">
-            <h2>Write a Blog</h2>
-            <form action="../Controller/AdminController.php" method="POST">
-                <div class="form-row"><input type="text" name="title" placeholder="Blog Title" required></div>
-                <div class="form-row"><textarea name="content" placeholder="Blog Content" required></textarea></div>
-                <div class="form-row"><button class="btn" type="submit" name="add_blog">Publish Blog</button></div>
-            </form>
-        </div>
-
-        <div class="card">
-            <h2>Upload to Gallery</h2>
-            <form action="../Controller/AdminController.php" method="POST" enctype="multipart/form-data">
-                <div class="form-row"><input type="text" name="description" placeholder="Photo Caption" required></div>
-                <div class="form-row"><input type="file" name="image" required></div>
-                <div class="form-row"><button class="btn" type="submit" name="upload_photo">Upload</button></div>
-            </form>
-        </div>
-
-        <div class="card">
-            <h2>Publish Result</h2>
-            <form action="../Controller/AdminController.php" method="POST">
-                <div class="form-row"><input type="text" name="name" placeholder="Participant Name" required></div>
-                <div class="form-row"><input type="text" name="phone" placeholder="Phone Number" required></div>
-                <div class="form-row"><input type="number" name="qty" placeholder="Selected Photos Qty" required></div>
-                <div class="form-row"><button class="btn" type="submit" name="publish_result">Publish</button></div>
-            </form>
-        </div>
+        <!-- Dashboard trimmed for Notice feature branch: only notice form remains -->
 
     </div>
 </body>
 </html>
+
+<script src="../assets/js/validation.js"></script>

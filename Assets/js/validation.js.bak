@@ -1,0 +1,154 @@
+document.addEventListener('DOMContentLoaded', function () {
+    const maxImageBytes = 5 * 1024 * 1024; // 5MB
+    const imageTypes = ['image/jpeg','image/png','image/gif','image/webp'];
+
+    function showAlert(form, type, message) {
+        let existing = form.querySelector('.form-alert');
+        if (existing) existing.remove();
+        const div = document.createElement('div');
+        div.className = 'form-alert ' + (type === 'error' ? 'alert-error' : 'alert-success');
+        div.textContent = message;
+        form.insertBefore(div, form.firstChild);
+    }
+
+    function clearAlert(form) {
+        let existing = form.querySelector('.form-alert');
+        if (existing) existing.remove();
+    }
+
+    // login form
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', function (e) {
+            clearAlert(loginForm);
+            const user = (loginForm.querySelector('[name="username"]') || {}).value || '';
+            const pass = (loginForm.querySelector('[name="password"]') || {}).value || '';
+            const usernameOk = /^[A-Za-z0-9_.\-]{3,50}$/.test(user);
+            if (!usernameOk) {
+                e.preventDefault();
+                showAlert(loginForm, 'error', 'Invalid username. Use 3–50 letters, numbers, _, -, or .');
+                return;
+            }
+            if (pass.length < 6) {
+                e.preventDefault();
+                showAlert(loginForm, 'error', 'Password must be at least 6 characters.');
+                return;
+            }
+        });
+    }
+
+    // signup form
+    const signupForm = document.getElementById('signupForm');
+    if (signupForm) {
+        signupForm.addEventListener('submit', function (e) {
+            clearAlert(signupForm);
+            const user = (signupForm.querySelector('[name="username"]') || {}).value || '';
+            const pass = (signupForm.querySelector('[name="password"]') || {}).value || '';
+            if (!/^[A-Za-z0-9_.\-]{3,50}$/.test(user)) {
+                e.preventDefault();
+                showAlert(signupForm, 'error', 'Invalid username. Use 3–50 letters, numbers, _, -, or .');
+                return;
+            }
+            if (pass.length < 6) {
+                e.preventDefault();
+                showAlert(signupForm, 'error', 'Password must be at least 6 characters.');
+                return;
+            }
+        });
+    }
+
+    // dashboard forms
+    const noticeForm = document.getElementById('noticeForm');
+    if (noticeForm) {
+        noticeForm.addEventListener('submit', function (e) {
+            clearAlert(noticeForm);
+            const title = (noticeForm.querySelector('[name="title"]') || {}).value || '';
+            const message = (noticeForm.querySelector('[name="message"]') || {}).value || '';
+            if (!title.trim() || title.length > 255) {
+                e.preventDefault();
+                showAlert(noticeForm, 'error', 'Title required (max 255 chars).');
+                return;
+            }
+            if (!message.trim() || message.length > 10000) {
+                e.preventDefault();
+                showAlert(noticeForm, 'error', 'Message required (max 10000 chars).');
+                return;
+            }
+        });
+    }
+
+    const blogForm = document.getElementById('blogForm');
+    if (blogForm) {
+        blogForm.addEventListener('submit', function (e) {
+            clearAlert(blogForm);
+            const title = (blogForm.querySelector('[name="title"]') || {}).value || '';
+            const content = (blogForm.querySelector('[name="content"]') || {}).value || '';
+            if (!title.trim() || title.length > 255) {
+                e.preventDefault();
+                showAlert(blogForm, 'error', 'Blog title required (max 255 chars).');
+                return;
+            }
+            if (!content.trim() || content.length > 10000) {
+                e.preventDefault();
+                showAlert(blogForm, 'error', 'Blog content required (max 10000 chars).');
+                return;
+            }
+        });
+    }
+
+    const galleryForm = document.getElementById('galleryForm');
+    if (galleryForm) {
+        galleryForm.addEventListener('submit', function (e) {
+            clearAlert(galleryForm);
+            const desc = (galleryForm.querySelector('[name="description"]') || {}).value || '';
+            const fileEl = galleryForm.querySelector('[name="image"]');
+            if (desc.length > 255) {
+                e.preventDefault();
+                showAlert(galleryForm, 'error', 'Description too long (max 255 chars).');
+                return;
+            }
+            if (!fileEl || !fileEl.files || fileEl.files.length === 0) {
+                e.preventDefault();
+                showAlert(galleryForm, 'error', 'Please select an image to upload.');
+                return;
+            }
+            const f = fileEl.files[0];
+            if (f.size > maxImageBytes) {
+                e.preventDefault();
+                showAlert(galleryForm, 'error', 'Image too large (max 5MB).');
+                return;
+            }
+            if (imageTypes.indexOf(f.type) === -1) {
+                e.preventDefault();
+                showAlert(galleryForm, 'error', 'Unsupported image type.');
+                return;
+            }
+        });
+    }
+
+    const resultForm = document.getElementById('resultForm');
+    if (resultForm) {
+        resultForm.addEventListener('submit', function (e) {
+            clearAlert(resultForm);
+            const name = (resultForm.querySelector('[name="name"]') || {}).value || '';
+            const phone = (resultForm.querySelector('[name="phone"]') || {}).value || '';
+            const qty = parseInt((resultForm.querySelector('[name="qty"]') || {}).value || '0', 10);
+            if (!name.trim()) {
+                e.preventDefault();
+                showAlert(resultForm, 'error', 'Participant name required.');
+                return;
+            }
+            if (!/^[0-9\s\+\-\(\)]+$/.test(phone) || phone.length > 30) {
+                e.preventDefault();
+                showAlert(resultForm, 'error', 'Enter a valid phone number.');
+                return;
+            }
+            if (isNaN(qty) || qty < 0 || qty > 1000) {
+                e.preventDefault();
+                showAlert(resultForm, 'error', 'Selected photo quantity must be a number between 0 and 1000.');
+                return;
+            }
+        });
+    }
+
+});

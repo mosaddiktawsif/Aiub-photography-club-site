@@ -1,0 +1,284 @@
+<?php
+session_start();
+require_once __DIR__ . '/../Models/db.php';
+require_once __DIR__ . '/../Models/validation.php';
+
+// Require CSRF for all POST actions
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $token = $_POST['csrf_token'] ?? '';
+    if (!verify_csrf_token($token)) {
+        header("Location: ../View/login.php?error=csrf");
+        exit;
+    }
+}
+
+// --- REGISTER (signup) ---
+if (isset($_POST['register_user'])) {
+    $user = sanitize($_POST['username'] ?? '');
+    $pass = $_POST['password'] ?? '';
+
+    if (!is_valid_username($user)) {
+        header("Location: ../View/signup.php?error=exists");
+        exit;
+    }
+    if (!is_valid_password($pass)) {
+        header("Location: ../View/signup.php?error=weakpass");
+        exit;
+    }
+
+    $check = $conn->prepare("SELECT id FROM users WHERE username = ?");
+    if (!$check) { die("Prepare failed: " . $conn->error); }
+    $check->bind_param("s", $user);
+    $check->execute();
+    $checkRes = $check->get_result();
+    if ($checkRes && $checkRes->num_rows > 0) {
+        header("Location: ../View/signup.php?error=exists");
+        exit;
+    }
+
+    $hash = password_hash($pass, PASSWORD_DEFAULT);
+    $stmt = $conn->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
+    if (!$stmt) { die("Prepare failed: " . $conn->error); }
+    $stmt->bind_param("ss", $user, $hash);
+
+    if ($stmt->execute()) {
+        header("Location: ../View/signup.php?success=1");
+        exit;
+    } else {
+        die("Error: " . $conn->error);
+    }
+}
+
+
+
+// --- LOGIN ---
+if (isset($_POST['login'])) {
+    $user = sanitize($_POST['username'] ?? '');
+    $pass = $_POST['password'] ?? '';
+
+    // fetch password hash (or plain) from DB
+    $q = $conn->prepare("SELECT id, password FROM users WHERE username = ? LIMIT 1");
+    if (!$q) { die("Prepare failed: " . $conn->error); }
+    $q->bind_param("s", $user);
+    $q->execute();
+    $res = $q->get_result();
+    if ($res && $row = $res->fetch_assoc()) {
+        $stored = $row['password'];
+        $ok = false;
+        if (password_needs_rehash($stored, PASSWORD_DEFAULT)) {
+            // unlikely unless hash algo changed; still check verify
+            $ok = password_verify($pass, $stored);
+        } elseif (strpos($stored, '$2y$') === 0 || strpos($stored, '$2b$') === 0 || strpos($stored, '$argon2') === 0) {
+            $ok = password_verify($pass, $stored);
+        } else {
+            // legacy plain text stored -- accept and upgrade
+            if (hash_equals($stored, (string)$pass)) {
+                $ok = true;
+            }
+        }
+
+        if ($ok) {
+            // if stored was plain, upgrade to hashed
+            if (!(strpos($stored, '$2y$') === 0 || strpos($stored, '$2b$') === 0 || strpos($stored, '$argon2') === 0)) {
+                $newHash = password_hash($pass, PASSWORD_DEFAULT);
+                $up = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
+                if ($up) { $up->bind_param("si", $newHash, $row['id']); $up->execute(); }
+            }
+            $_SESSION['admin_logged_in'] = true;
+            header("Location: ../View/dashboard.php");
+            exit;
+        }
+    }
+    header("Location: ../View/login.php?error=invalid");
+    exit;
+}
+
+
+
+// From here, actions require authenticated admin
+if (!isset($_SESSION['admin_logged_in'])) {
+    header("Location: ../View/login.php");
+    exit;
+}
+
+
+
+// --- ADD NOTICE ---
+if (isset($_POST['add_notice'])) {
+    $title = sanitize($_POST['title'] ?? '');
+    $message = sanitize($_POST['message'] ?? '');
+    if (!is_valid_title($title) || !is_valid_content($message)) {
+        header("Location: ../View/dashboard.php?error=invalid_input");
+        exit;
+    }
+    $stmt = $conn->prepare("INSERT INTO notices (title, message) VALUES (?, ?)");
+    if (!$stmt) { die("Prepare failed: " . $conn->error); }
+    $stmt->bind_param("ss", $title, $message);
+    if ($stmt->execute()) {
+        header("Location: ../View/dashboard.php?success=notice");
+        exit;
+    } else {
+        die("Insert failed: " . $stmt->error);
+    }
+}
+
+
+
+// --- ADD BLOG ---
+if (isset($_POST['add_blog'])) {
+    $title = sanitize($_POST['title'] ?? '');
+    $content = sanitize($_POST['content'] ?? '');
+    if (!is_valid_title($title) || !is_valid_content($content)) {
+        header("Location: ../View/dashboard.php?error=invalid_input");
+        exit;
+    }
+    $stmt = $conn->prepare("INSERT INTO blogs (title, content) VALUES (?, ?)");
+    if (!$stmt) { die("Prepare failed: " . $conn->error); }
+    $stmt->bind_param("ss", $title, $content);
+    if ($stmt->execute()) {
+        header("Location: ../View/dashboard.php?success=blog");
+        exit;
+    } else {
+        die("Insert failed: " . $stmt->error);
+    }
+}
+
+
+
+// --- UPLOAD PHOTO ---
+if (isset($_POST['upload_photo'])) {
+    $error = null;
+    if (!validate_image_upload($_FILES['image'] ?? null, $error)) {
+        header("Location: ../View/dashboard.php?error=" . urlencode($error));
+        exit;
+    }
+    $description = sanitize($_POST['description'] ?? '');
+    if (strlen($description) > 255) $description = substr($description,0,255);
+
+    $uploadDir = __DIR__ . '/../assets/uploads';
+    if (!is_dir($uploadDir)) { mkdir($uploadDir, 0755, true); }
+
+    $originalName = basename($_FILES['image']['name']);
+    $ext = pathinfo($originalName, PATHINFO_EXTENSION);
+    $safeName = uniqid('img_', true) . '.' . $ext;
+    $targetPath = $uploadDir . '/' . $safeName;
+    $webPath = 'assets/uploads/' . $safeName;
+
+    if (!move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
+        header("Location: ../View/dashboard.php?error=upload_failed");
+        exit;
+    }
+    $stmt = $conn->prepare("INSERT INTO gallery (description, image_path) VALUES (?, ?)");
+    if (!$stmt) { die("Prepare failed: " . $conn->error); }
+    $stmt->bind_param("ss", $description, $webPath);
+    if ($stmt->execute()) {
+        header("Location: ../View/dashboard.php?success=gallery");
+        exit;
+    } else {
+        die("Insert failed: " . $stmt->error);
+    }
+}
+
+
+
+// --- PUBLISH RESULT ---
+if (isset($_POST['publish_result'])) {
+    $name = sanitize($_POST['name'] ?? '');
+    $phone = sanitize($_POST['phone'] ?? '');
+    $qty = intval($_POST['qty'] ?? 0);
+    if ($name === '' || !is_valid_phone($phone) || $qty < 0 || $qty > 1000) {
+        header("Location: ../View/dashboard.php?error=invalid_input");
+        exit;
+    }
+    $stmt = $conn->prepare("INSERT INTO results (participant_name, contact_number, selected_photo_qty) VALUES (?, ?, ?)");
+    if (!$stmt) { die("Prepare failed: " . $conn->error); }
+    $stmt->bind_param("ssi", $name, $phone, $qty);
+    if ($stmt->execute()) {
+        header("Location: ../View/dashboard.php?success=result");
+        exit;
+    } else {
+        die("Insert failed: " . $stmt->error);
+    }
+}
+
+
+
+// --- DELETE NOTICE ---
+if (isset($_POST['delete_notice'])) {
+    $id = intval($_POST['id'] ?? 0);
+    $stmt = $conn->prepare("DELETE FROM notices WHERE id = ?");
+    if (!$stmt) { die("Prepare failed: " . $conn->error); }
+    $stmt->bind_param("i", $id);
+    if ($stmt->execute()) {
+        header("Location: ../View/notice_list.php?deleted=1");
+        exit;
+    } else {
+        die("Delete failed: " . $stmt->error);
+    }
+}
+
+
+
+// --- DELETE BLOG ---
+if (isset($_POST['delete_blog'])) {
+    $id = intval($_POST['id'] ?? 0);
+    $stmt = $conn->prepare("DELETE FROM blogs WHERE id = ?");
+    if (!$stmt) { die("Prepare failed: " . $conn->error); }
+    $stmt->bind_param("i", $id);
+    if ($stmt->execute()) {
+        header("Location: ../View/blog_list.php?deleted=1");
+        exit;
+    } else {
+        die("Delete failed: " . $stmt->error);
+    }
+}
+
+
+
+// --- DELETE PHOTO ---
+if (isset($_POST['delete_photo'])) {
+    $id = intval($_POST['id'] ?? 0);
+    $q = $conn->prepare("SELECT image_path FROM gallery WHERE id = ?");
+    if ($q) {
+        $q->bind_param("i", $id);
+        $q->execute();
+        $r = $q->get_result();
+        if ($r && $row = $r->fetch_assoc()) {
+            $img = $row['image_path'];
+            if ($img) {
+                $filePath = __DIR__ . '/../' . ltrim($img, '/');
+                if (file_exists($filePath)) { @unlink($filePath); }
+            }
+        }
+    }
+    $stmt = $conn->prepare("DELETE FROM gallery WHERE id = ?");
+    if (!$stmt) { die("Prepare failed: " . $conn->error); }
+    $stmt->bind_param("i", $id);
+    if ($stmt->execute()) {
+        header("Location: ../View/gallery.php?deleted=1");
+        exit;
+    } else {
+        die("Delete failed: " . $stmt->error);
+    }
+}
+
+
+
+// --- DELETE RESULT ---
+if (isset($_POST['delete_result'])) {
+    $id = intval($_POST['id'] ?? 0);
+    $stmt = $conn->prepare("DELETE FROM results WHERE id = ?");
+    if (!$stmt) { die("Prepare failed: " . $conn->error); }
+    $stmt->bind_param("i", $id);
+    if ($stmt->execute()) {
+        header("Location: ../View/results.php?deleted=1");
+        exit;
+    } else {
+        die("Delete failed: " . $stmt->error);
+    }
+}
+
+
+header("Location: ../View/dashboard.php");
+exit;
+?>

@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/../Models/db.php';
 session_start();
+require_once __DIR__ . '/../Models/validation.php';
+ensure_csrf_token();
 $admin = !empty($_SESSION['admin_logged_in']);
 ?>
 <!DOCTYPE html>
@@ -10,6 +12,15 @@ $admin = !empty($_SESSION['admin_logged_in']);
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
+    <nav>
+        <a class="brand" href="../index.php">AIUB Photography Club</a>
+        <a href="blog_list.php">BLOG</a>
+        <a href="notice_list.php">NOTICE BOARD</a>
+        <a href="gallery.php">GALLERY</a>
+        <a href="results.php">RESULTS</a>
+        <a href="login.php" class="nav-right">ADMIN LOGIN</a>
+    </nav>
+
     <div class="container">
         <div class="h-wrap">
             <h1>Gallery</h1>
@@ -31,10 +42,13 @@ $admin = !empty($_SESSION['admin_logged_in']);
                     echo '<img src="' . htmlspecialchars($imgOut) . '" alt="' . htmlspecialchars($row['description']) . '">';
                     echo '<div class="gallery-caption">' . htmlspecialchars($row['description']) . '</div>';
                     if ($admin) {
-                        echo '<div style="padding:8px;"><form method="POST" action="../Controller/AdminController.php" onsubmit="return confirm(\'Delete this photo?\');">';
+                        echo '<div style="padding:8px;">';
+                        echo '<form method="POST" action="../Controller/AdminController.php" onsubmit="return confirm(\'Delete this photo?\');">';
+                        echo '<input type="hidden" name="csrf_token" value="' . htmlspecialchars($_SESSION['csrf_token']) . '">';
                         echo '<input type="hidden" name="id" value="' . intval($row['id']) . '">';
                         echo '<button class="btn secondary" type="submit" name="delete_photo">Delete</button>';
-                        echo '</form></div>';
+                        echo '</form>';
+                        echo '</div>';
                     }
                     echo '</div>';
                 }
