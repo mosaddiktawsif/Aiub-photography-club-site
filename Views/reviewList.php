@@ -4,7 +4,7 @@ require_once('../Models/reviewModel.php');
 $list = getPendingSubmissions();
 ?>
 <html>
-<head><link rel="stylesheet" href="../Assets/css/style.css"></head>
+<head><link rel="stylesheet" href="../Assets/style.css"></head>
 <body>
     <div class="container">
         <h2>4.2 Submission Review</h2>
